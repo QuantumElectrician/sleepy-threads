@@ -13,6 +13,7 @@
 
 #define TASKS_N 100
 #define THREADS_N 10
+#define RAND_PARAM 10000
 
 typedef enum{
     NEW,
@@ -86,7 +87,7 @@ int main(int argc, const char * argv[])
     //задание задания
     for (int i = 0; i < TASKS_N; i++)
     {
-        tasks[i].duration = rand() / 10000;
+        tasks[i].duration = rand() / RAND_PARAM;
         tasks[i].id = i;
         tasks[i].status = NEW;
     }
