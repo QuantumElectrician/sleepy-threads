@@ -54,15 +54,21 @@ void* my_thread(void* dummy)
         pthread_mutex_lock(&lock);
         if (tasks[i].status == NEW)
         {
-            //pthread_mutex_lock(&lock);
             tasks[i].status = PROCESSING;
-           // pthread_mutex_unlock(&lock);
-            usleep(tasks[i].duration);
-            tasks[i].status = DONE;
             tasks[i].worker = worker;
-            statistics[index].stat++;
         }
         pthread_mutex_unlock(&lock);
+        if ( (tasks[i].status == PROCESSING) && (tasks[i].worker == worker) )
+        {
+            //pthread_mutex_lock(&lock);
+            //tasks[i].status = PROCESSING;
+            //pthread_mutex_unlock(&lock);
+            usleep(tasks[i].duration);
+            tasks[i].status = DONE;
+            //tasks[i].worker = worker;
+            statistics[index].stat++;
+        }
+       // pthread_mutex_unlock(&lock);
     }
     
     return 0;
@@ -73,12 +79,14 @@ int main(int argc, const char * argv[])
     //statuses status = DONE;
     int result;
     
+    srand ( (unsigned int)time(NULL) ); //инициализация рандомайзера
+    
     pthread_mutex_init(&lock, NULL); //инициализация лока
     
     //задание задания
     for (int i = 0; i < TASKS_N; i++)
     {
-        tasks[i].duration = 1;
+        tasks[i].duration = rand() / 10000;
         tasks[i].id = i;
         tasks[i].status = NEW;
     }
